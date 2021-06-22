@@ -1,4 +1,4 @@
-
+#include "holberton.h"
 /**
  *powB - raises the number base to power power
  *@base : the base
@@ -115,4 +115,4 @@ void print_times_table(int n)
 			_putchar('\n');
 		}
 	}
-} 
+}
