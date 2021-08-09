@@ -1,46 +1,44 @@
 #include "main.h"
 
 /**
- * read_textfile - reads a text file and prints it to stdout
- * @filename: the name of the file to be written
- * @letters: the number of letters to read and print
- * Return: the number of letters it read and printed
+ * read_textfile - reads a text file and prints it to the
+ * POSIX standard output
+ * @filename: pointer to filename
+ * @letters: bytes to print
+ * Return: actual bytes printed
  */
 ssize_t read_textfile(const char *filename, size_t letters)
 {
-	int fd, numwrit, numread;
-	char *buf = malloc(sizeof(char) * (letters + 1));
+	register int fd, r, w;
+	char *buffer = NULL;
 
-	if (buf == NULL)
+	if (!filename)
 		return (0);
-	if (filename == NULL || letters == 0)
-	{
-		free(buf);
+	buffer = malloc(letters + 1);
+	if (!buffer)
 		return (0);
-	}
 	fd = open(filename, O_RDONLY);
-	if (fd < 0)
+	if (fd == -1)
 	{
-		close(fd);
-		free(buf);
+		free(buffer);
 		return (0);
 	}
-	numread = read(fd, buf, letters);
-	if (numread < 0)
+	r = read(fd, buffer, letters);
+	if (r == -1)
 	{
+		free(buffer);
 		close(fd);
-		free(buf);
 		return (0);
 	}
-	buf[letters] = '\0';
-	numwrit = write(STDOUT_FILENO, buf, numread);
-	if (numwrit <= 0)
+	buffer[letters] = '\0';
+	w = write(STDOUT_FILENO, buffer, r);
+	if (w == -1)
 	{
+		free(buffer);
 		close(fd);
-		free(buf);
 		return (0);
 	}
+	free(buffer);
 	close(fd);
-	free(buf);
-	return (numwrit);
+	return (w);
 }
